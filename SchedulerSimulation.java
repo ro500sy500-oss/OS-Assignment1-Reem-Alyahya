@@ -44,7 +44,9 @@ private int priority = (int)(Math.random() * 10) + 1;
     public long getWaitingTime() {
     return waitingTime;
 }
-
+public int getPriority() {
+    return priority;
+}
 public long getTurnaroundTime() {
     return waitingTime + burstTime;
 }
@@ -286,8 +288,11 @@ currentProcess.startRunning();
               
             }
         }
-          System.out.println("Total context switches: " + contextSwitchCount);
-        System.out.println(
+         
+      
+System.out.println("Total context switches: " + contextSwitchCount);
+
+System.out.println(
     "\nProcess | Burst Time | Waiting Time | Turnaround Time"
 );
 
@@ -299,24 +304,7 @@ for (Process p : new java.util.LinkedHashSet<>(processMap.values())) {
         p.getTurnaroundTime()
     );
 }
-for (Process p : processMap.values()) {
-    System.out.println(
-        p.getName() + " | " +
-        p.getBurstTime() + " | " +
-        p.getWaitingTime() + " | " +
-        p.getTurnaroundTime()
-    );
-}
-for (Map.Entry<Thread, Process> entry : processMap.entrySet()) {
-    Process p = entry.getValue();
 
-    System.out.println(
-        p.getName() + " | " +
-        p.getBurstTime() + " | " +
-        p.getWaitingTime() + " | " +
-        p.getTurnaroundTime()
-    );
-}
         // End of the scheduler simulation
         System.out.println(Colors.BOLD + Colors.BRIGHT_GREEN + 
                           "╔════════════════════════════════════════════════════════════════════════════════╗" + 
