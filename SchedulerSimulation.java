@@ -30,6 +30,9 @@ class Process implements Runnable {
     private int burstTime; // Total time the process requires to complete (in milliseconds)
     private int timeQuantum; // Time slice (time quantum) allowed per CPU access (in milliseconds)
     private int remainingTime; // Time left for the process to finish its execution
+    private long waitingTime = 0;
+private long readyQueueEntryTime = 0;
+private long startTime = 0;ذ
 private int priority = (int)(Math.random() * 10) + 1;
     // Constructor to initialize the process with name, burst time, and time quantum
     public Process(String name, int burstTime, int timeQuantum) {
@@ -38,7 +41,13 @@ private int priority = (int)(Math.random() * 10) + 1;
         this.timeQuantum = timeQuantum;
         this.remainingTime = burstTime; // Initially, remaining time is equal to the burst time
     }
+public void enterReadyQueue() {
+    readyQueueEntryTime = System.currentTimeMillis();
+}
 
+public void startRunning() {
+    waitingTime += System.currentTimeMillis() - readyQueueEntryTime;
+}
     // This method will be called when the thread for this process is started
     @Override
     public void run() {
@@ -286,6 +295,7 @@ public class SchedulerSimulation {
     // Method to add a process to the queue and map, while printing a "ready" message
     public static void addProcessToQueue(Process process, Queue<Thread> processQueue, 
                                         Map<Thread, Process> processMap) {
+        process.enterReadyQueue();
         // Create a new thread to run the process
         Thread thread = new Thread(process);
         
