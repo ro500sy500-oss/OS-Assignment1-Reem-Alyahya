@@ -30,8 +30,6 @@ class Process implements Runnable {
     private int burstTime; // Total time the process requires to complete (in milliseconds)
     private int timeQuantum; // Time slice (time quantum) allowed per CPU access (in milliseconds)
     private int remainingTime; // Time left for the process to finish its execution
-    private long waitingTime = 0;
-private long readyQueueEntryTime = 0;
 private long startTime = 0;
     private long waitingTime = 0;
 private long readyQueueEntryTime = 0;
@@ -57,29 +55,13 @@ public void enterReadyQueue() {
 public void startRunning() {
     waitingTime += System.currentTimeMillis() - readyQueueEntryTime;
 }
-    public void enterReadyQueue() {
-    readyQueueEntryTime = System.currentTimeMillis();
-}
 
-public void startRunning() {
-    waitingTime += System.currentTimeMillis() - readyQueueEntryTime;
-}
-
-public long getWaitingTime() {
-    return waitingTime;
-}
-
-public long getTurnaroundTime() {
-    return waitingTime + burstTime;
-}
     // This method will be called when the thread for this process is started
     @Override
     public void run() {
         // Simulate running for either the time quantum or remaining time, whichever is smaller
         int runTime = Math.min(timeQuantum, remainingTime); // Run for the smaller of the two times
-        public int getPriority() {
-    return priority;
-}
+        
         // Show quantum execution starting
         String quantumBar = createProgressBar(0, 15);
         System.out.println(Colors.BRIGHT_GREEN + "  ▶ " + Colors.BOLD + Colors.CYAN + name + 
@@ -275,8 +257,6 @@ currentProcess.startRunning();
             System.out.println(Colors.BRIGHT_WHITE + "]" + Colors.RESET);
             System.out.println(Colors.BOLD + Colors.MAGENTA + "└" + "─".repeat(79) + Colors.RESET + "\n");
 
-            Process currentProcess = processMap.get(currentThread);
-currentProcess.startRunning();
             // Start the thread, which will run the process for one time quantum
             currentThread.start();
             
@@ -307,9 +287,18 @@ currentProcess.startRunning();
             }
         }
           System.out.println("Total context switches: " + contextSwitchCount);
-        System.out.println("\nProcess | Burst Time | Waiting Time | Turnaround Time");
-System.out.println("\nProcess | Burst Time | Waiting Time | Turnaround Time");
+        System.out.println(
+    "\nProcess | Burst Time | Waiting Time | Turnaround Time"
+);
 
+for (Process p : new java.util.LinkedHashSet<>(processMap.values())) {
+    System.out.println(
+        p.getName() + " | " +
+        p.getBurstTime() + " | " +
+        p.getWaitingTime() + " | " +
+        p.getTurnaroundTime()
+    );
+}
 for (Process p : processMap.values()) {
     System.out.println(
         p.getName() + " | " +
@@ -347,7 +336,6 @@ for (Map.Entry<Thread, Process> entry : processMap.entrySet()) {
         process.enterReadyQueue();
         // Create a new thread to run the process
         Thread thread = new Thread(process);
-        process.enterReadyQueue();
         // Add the thread to the ready queue
         processQueue.add(thread);
         
