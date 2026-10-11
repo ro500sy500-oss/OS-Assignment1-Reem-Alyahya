@@ -41,6 +41,13 @@ private int priority = (int)(Math.random() * 10) + 1;
         this.timeQuantum = timeQuantum;
         this.remainingTime = burstTime; // Initially, remaining time is equal to the burst time
     }
+    public long getWaitingTime() {
+    return waitingTime;
+}
+
+public long getTurnaroundTime() {
+    return waitingTime + burstTime;
+}
 public void enterReadyQueue() {
     readyQueueEntryTime = System.currentTimeMillis();
 }
@@ -233,6 +240,8 @@ public class SchedulerSimulation {
             // Get the next thread from the queue (FIFO)
             Thread currentThread = processQueue.poll(); // Dequeues the next thread
             contextSwitchCount++;
+            Process currentProcess = processMap.get(currentThread);
+currentProcess.startRunning();
             // Print the current process queue (list of process IDs in the queue)
             System.out.println(Colors.BOLD + Colors.MAGENTA + "┌─ Ready Queue " + "─".repeat(65) + Colors.RESET);
             System.out.print(Colors.MAGENTA + "│ " + Colors.RESET + Colors.BRIGHT_WHITE + "[" + Colors.RESET);
@@ -279,6 +288,18 @@ public class SchedulerSimulation {
             }
         }
           System.out.println("Total context switches: " + contextSwitchCount);
+        System.out.println("\nProcess | Burst Time | Waiting Time | Turnaround Time");
+
+for (Map.Entry<Thread, Process> entry : processMap.entrySet()) {
+    Process p = entry.getValue();
+
+    System.out.println(
+        p.getName() + " | " +
+        p.getBurstTime() + " | " +
+        p.getWaitingTime() + " | " +
+        p.getTurnaroundTime()
+    );
+}
         // End of the scheduler simulation
         System.out.println(Colors.BOLD + Colors.BRIGHT_GREEN + 
                           "╔════════════════════════════════════════════════════════════════════════════════╗" + 
